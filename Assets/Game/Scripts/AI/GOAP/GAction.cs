@@ -6,18 +6,18 @@ namespace IsekaiRPG.AI.GOAP
 {
     public abstract class GAction : MonoBehaviour
     {
-        [SerializeField] string actionName = "Action";
-        [SerializeField] float cost = 1.0f;
-        [SerializeField] GameObject target;
-        [SerializeField] GameObject targetTag;
-        [SerializeField] float duration = 0;
-        [SerializeField] WorldState[] preConditions;
-        [SerializeField] WorldState[] afterEffects;
-        [SerializeField] NavMeshAgent agent;
-        [SerializeField] Dictionary<string, int> preconditions;
-        [SerializeField] Dictionary<string, int> effects;
-        [SerializeField] WorldStates agentBeliefs;
-        [SerializeField] bool isRunning = false;
+        public string actionName = "Action";
+        public float cost = 1.0f;
+        public GameObject target;
+        public string targetTag;
+        public float duration = 0;
+        public WorldState[] preConditions;
+        public WorldState[] afterEffects;
+        public NavMeshAgent agent;
+        public Dictionary<string, int> preconditions;
+        public Dictionary<string, int> effects;
+        public WorldStates agentBeliefs;
+        public bool isRunning = false;
         public GAction()
         {
             preconditions = new Dictionary<string, int>();
@@ -25,11 +25,21 @@ namespace IsekaiRPG.AI.GOAP
         }
         private void Awake()
         {
-            agent = GetComponent<NavMeshAgent>();
-        }
-        private void Start()
-        {
-            InitializingDictionaries();
+            agent = gameObject.GetComponent<NavMeshAgent>();
+            if (preConditions != null)
+            {
+                foreach (WorldState state in preConditions)
+                {
+                    preconditions.Add(state.key, state.value);
+                }
+            }
+            if (afterEffects != null)
+            {
+                foreach (WorldState state in afterEffects)
+                {
+                    effects.Add(state.key, state.value);
+                }
+            }
         }
         public bool IsActionAchievable()
         {
@@ -63,5 +73,6 @@ namespace IsekaiRPG.AI.GOAP
                 }
             }
         }
+
     }
 }
