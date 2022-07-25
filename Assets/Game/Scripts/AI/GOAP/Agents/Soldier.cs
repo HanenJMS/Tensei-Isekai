@@ -6,11 +6,13 @@ namespace IsekaiRPG.AI.GOAP
 {
     public class Soldier : GAgent
     {
+        JobType jobType;
         new void Start()
         {
             base.Start();
-            SubGoal s1 = new SubGoal("isHunting", 1, true);
-            goals.Add(s1, 3);
+            jobType = JobType.Soldier;
+            SubGoal hasFinishedPatrol = new SubGoal("hasFinishedPatrol", 1, true);
+            goals.Add(hasFinishedPatrol, 3);
         }
     }
 }

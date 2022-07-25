@@ -26,20 +26,8 @@ namespace IsekaiRPG.AI.GOAP
         private void Awake()
         {
             agent = gameObject.GetComponent<NavMeshAgent>();
-            if (preConditions != null)
-            {
-                foreach (WorldState state in preConditions)
-                {
-                    preconditions.Add(state.key, state.value);
-                }
-            }
-            if (afterEffects != null)
-            {
-                foreach (WorldState state in afterEffects)
-                {
-                    effects.Add(state.key, state.value);
-                }
-            }
+            InitializingDictionaries();
+            agentBeliefs = gameObject.GetComponent<GAgent>().beliefs;
         }
         public bool IsActionAchievable()
         {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace IsekaiRPG.AI.GOAP.Action
 {
-    public class HuntTargets : GAction
+    public class CaptureTarget : GAction
     {
         public override bool PostPerform()
         {
@@ -14,9 +14,8 @@ namespace IsekaiRPG.AI.GOAP.Action
 
         public override bool PrePerform()
         {
-            GWorld.Instance.GetWorld().ModifyState("Hunting", 1);
-            //GWorld.Instance.addHunter(this.gameObject);
             return true;
         }
     }
 }
+

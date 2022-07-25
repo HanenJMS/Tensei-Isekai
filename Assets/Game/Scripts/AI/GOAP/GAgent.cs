@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.AI;
 
 namespace IsekaiRPG.AI.GOAP
 {
@@ -16,17 +17,25 @@ namespace IsekaiRPG.AI.GOAP
             remove = r;
         }
     }
+    public enum JobType
+    {
+        Soldier, Gatherer, Merchant, Crafter
+    }
     public class GAgent : MonoBehaviour
     {
         public List<GAction> actions = new List<GAction>();
         public Dictionary<SubGoal, int> goals = new Dictionary<SubGoal, int>();
         public WorldStates beliefs = new WorldStates();
+        public GInventory inventory = new GInventory();
+        public float distanceToTarget = 2f;
         GPlanner planner;
         Queue<GAction> actionQueue;
         public GAction currentAction;
         SubGoal currentGoal;
+        Animator animator;
         public void Start()
         {
+            animator = GetComponent<Animator>();
             GAction[] acts = this.GetComponents<GAction>();
             foreach(GAction act in acts)
             {
@@ -40,11 +49,24 @@ namespace IsekaiRPG.AI.GOAP
             currentAction.PostPerform();
             invoked = false;
         }
+        private void Update()
+        {
+            UpdateAnimator();
+        }
+
+        private void UpdateAnimator()
+        {
+            Vector3 velocity = GetComponent<NavMeshAgent>().velocity;
+            Vector3 localVelocity = transform.InverseTransformDirection(velocity);
+            float speed = localVelocity.z;
+            animator.SetFloat("forwardSpeed", speed);
+        }
+
         void LateUpdate()
         {
             if (currentAction != null && currentAction.isRunning)
             {
-                if (currentAction.agent.hasPath && currentAction.agent.remainingDistance < 1f)
+                if (currentAction.agent.hasPath && currentAction.agent.remainingDistance < distanceToTarget)
                 {
                     if (!invoked)
                     {
@@ -60,7 +82,7 @@ namespace IsekaiRPG.AI.GOAP
                 var sortedGoals = from entry in goals orderby entry.Value descending select entry;
                 foreach (KeyValuePair<SubGoal, int> sg in sortedGoals)
                 {
-                    actionQueue = planner.plan(actions, sg.Key.sgoals, null);
+                    actionQueue = planner.plan(actions, sg.Key.sgoals, beliefs);
                     if (actionQueue != null)
                     {
                         currentGoal = sg.Key;
