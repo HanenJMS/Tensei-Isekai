@@ -9,30 +9,26 @@ namespace IsekaiRPG.AI.GOAP
     {
         public float quantity;
         public float searchDistance;
-        ResourceType resourceDemanded = ResourceType.Wood;
+        [SerializeField] ResourceType resourceDemanded = ResourceType.Wood;
         public override bool PrePerform()
         {
-            foreach (GameResource resource in GameObject.FindObjectsOfType<GameResource>())
-            {
-                if(resource.GetResourceType().Equals(resourceDemanded))
-                {
-                    if(Vector3.Distance(resource.gameObject.transform.position, this.gameObject.transform.position) < searchDistance)
-                    {
-
-                    }
-                }
-            }
-            if (quantity > 0)
-            {
-                return false;
-            }
+            
             return true;
         }
         public override bool PostPerform()
         {
+            if (quantity > GameObject.FindObjectsOfType<GameResource>().Length) return false;
+            foreach (GameResource resource in GameObject.FindObjectsOfType<GameResource>())
+            {
+                if (resource.GetResourceType().Equals(resourceDemanded))
+                {
+                    if (Vector3.Distance(this.gameObject.transform.position, resource.gameObject.transform.position) < searchDistance)
+                    {
+                        GWorld.Instance.AddResource(resource.gameObject, resourceDemanded);
+                    }
+                }
+            }
             return true;
         }
-
-        
     }
 }

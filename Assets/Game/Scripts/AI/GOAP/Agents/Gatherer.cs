@@ -14,7 +14,7 @@ namespace IsekaiRPG.AI.GOAP
             base.Start();
             jobType = JobType.Gatherer;
             SubGoal foundResource = new SubGoal("foundResource", demand, true);
-            SubGoal hasResources = new SubGoal("hasResources", demand, true);
+            SubGoal hasResources = new SubGoal("hasResource", demand, true);
             goals.Add(foundResource, demand);
             goals.Add(hasResources, demand);
         }

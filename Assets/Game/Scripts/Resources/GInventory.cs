@@ -5,15 +5,22 @@ using UnityEngine;
 
 public class GInventory
 {
-    List<IResource> resources = new List<IResource>();
-    public void AddItem(IResource resource)
+    Dictionary<ResourceType, List<GameObject>> resourceInventory = new Dictionary<ResourceType, List<GameObject>>();
+    public void AddItem(GameObject resource, ResourceType resourceType)
     {
-        resources.Add(resource);
+        if(!resourceInventory.ContainsKey(resourceType)) resourceInventory.Add(resourceType, new List<GameObject>());
+        foreach(KeyValuePair<ResourceType, List<GameObject>> kvp in resourceInventory)
+        {
+            if(kvp.Key == resourceType)
+            {
+                kvp.Value.Add(resource);
+            }
+        }
     }
-    public void RemoveResource(IResource resource)
+    public void RemoveResource(GameObject resource)
     {
         int indexToRemove = -1;
-        foreach (IResource r in resources)
+        foreach (GameObject r in resourceInventory[resource.GetComponent<GameResource>().GetResourceType()])
         {
             indexToRemove++;
             if (r == resource)
@@ -23,7 +30,7 @@ public class GInventory
         }
         if (indexToRemove > -1)
         {
-            resources.RemoveAt(indexToRemove);
+            resourceInventory[resource.GetComponent<GameResource>().GetResourceType()].RemoveAt(indexToRemove);
         }
     }
 }

@@ -1,5 +1,4 @@
 using RPG.GameResources;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,51 +8,48 @@ namespace IsekaiRPG.AI.GOAP
     {
         private static readonly GWorld instance = new GWorld();
         private static WorldStates world;
-        private static Dictionary<ResourceType, Queue<GameResource>> gameResources;
+        private static Dictionary<ResourceType, Queue<GameObject>> gameResources;
         static GWorld()
         {
             world = new WorldStates();
-            gameResources = new Dictionary<ResourceType, Queue<GameResource>>();
+            gameResources = new Dictionary<ResourceType, Queue<GameObject>>();
         }
         private GWorld()
         {
         }
-        public void AddResource(GameResource gameResource)
+        public void AddResource(GameObject gameResource, ResourceType resourceType)
         {
-            if (!gameResources.ContainsKey(gameResource.GetResourceType()))
+            if (!gameResources.ContainsKey(resourceType))
             {
-                gameResources.Add(gameResource.GetResourceType(), new Queue<GameResource>());
+                gameResources.Add(resourceType, new Queue<GameObject>());
             }
-            foreach(KeyValuePair<ResourceType, Queue<GameResource>> kvp in gameResources)
+            foreach (KeyValuePair<ResourceType, Queue<GameObject>> kvp in gameResources)
             {
-                if(kvp.Key.Equals(gameResource.GetResourceType()))
+                if (kvp.Key.Equals(resourceType))
                 {
                     kvp.Value.Enqueue(gameResource);
-                    return;
+                    world.ModifyState("has", 1);
                 }
             }
         }
-        public GameResource RemoveResource(ResourceType gameResourceType)
+        public GameObject RemoveResource(ResourceType gameResourceType)
         {
-            GameResource giveResource = null;
+            GameObject giveResource = null;
             if (!gameResources.ContainsKey((gameResourceType)))
             {
-                Debug.Log("No Resource type requested. GWorld.cs (40). check references for RemoveResource().");
                 return null;
             }
-            foreach(KeyValuePair<ResourceType, Queue<GameResource>> kvp in gameResources)
+            foreach (KeyValuePair<ResourceType, Queue<GameObject>> kvp in gameResources)
             {
-                if(kvp.Key.Equals((gameResourceType)))
+                if (kvp.Key.Equals(gameResourceType))
                 {
                     giveResource = kvp.Value.Dequeue();
+                    world.ModifyState(gameResourceType.ToString(), -1);
                 }
             }
             return giveResource;
         }
-        public static GWorld Instance
-        {
-            get { return instance; }
-        }
+        public static GWorld Instance => instance;
         public WorldStates GetWorld()
         {
             return world;

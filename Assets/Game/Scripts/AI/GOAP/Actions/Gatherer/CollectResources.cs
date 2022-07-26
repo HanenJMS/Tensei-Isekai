@@ -9,16 +9,15 @@ namespace IsekaiRPG.AI.GOAP
     {
         public float quantity;
         public float searchDistance;
-        ResourceType resourceDemanded = ResourceType.Wood;
+        [SerializeField] ResourceType resourceDemanded = ResourceType.Wood;
         public override bool PrePerform()
         {
+            target = GWorld.Instance.RemoveResource(resourceDemanded);
+            if(target == null) return false;
             return true;
         }
         public override bool PostPerform()
         {
-            //target = GWorld.Instance.RemoveWood();
-            if (target == null) return false;
-            GWorld.Instance.GetWorld().ModifyState("needWood", -1);
             return true;
         }
     }

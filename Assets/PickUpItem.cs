@@ -1,11 +1,12 @@
+using IsekaiRPG.AI.GOAP;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.GameResources
 {
-    public enum ResourceType
+    public class PickUpItem : MonoBehaviour
     {
-        Wood, Stone
+        
     }
 }

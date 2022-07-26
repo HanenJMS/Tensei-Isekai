@@ -8,15 +8,19 @@ namespace RPG.GameResources
     public class GameResource : MonoBehaviour, IResource
     {
         [SerializeField] ResourceType resourceType;
-
+        private void Start()
+        {
+            
+        }
+        
         public ResourceType GetResourceType()
         {
             return resourceType;
         }
-
         private void OnTriggerEnter(Collider other)
         {
-            other.gameObject.GetComponent<GAgent>().inventory.AddItem(this);
+            if (other.GetComponent<GAgent>() == null) return;
+            other.gameObject.GetComponent<GAgent>().inventory.AddItem(this.gameObject, this.gameObject.GetComponent<GameResource>().GetResourceType());
             Destroy(this.gameObject);
         }
     }

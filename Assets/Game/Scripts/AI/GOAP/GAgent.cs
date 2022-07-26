@@ -101,6 +101,7 @@ namespace IsekaiRPG.AI.GOAP
             if (actionQueue != null && actionQueue.Count > 0)
             {
                 currentAction = actionQueue.Dequeue();
+                Debug.Log($"This is {currentAction.actionName}");
                 if (currentAction.PrePerform())
                 {
                     if (currentAction.target == null && currentAction.targetTag != "")
